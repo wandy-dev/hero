@@ -13,7 +13,7 @@ heroku toolbelt
 
 copy herorc-example to `~/.herorc`
 
-Add the names off the apps on your heroku account to the `APPS` array
+Add the names of the apps on your heroku account to the `APPS` array
 Add any commands you would like to run to the `COMMANDS` array
 
 ### Usage
