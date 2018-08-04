@@ -1,0 +1,3 @@
+APPS=(hero-api hero-client)
+
+COMMANDS=('bundle exec rails c' 'pkill puma' 'bash')
