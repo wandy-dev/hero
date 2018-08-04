@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# File configuration
+CFG_FILE="${CFG_FILE:-$HOME/.herorc}"
+
+# Check for configuration file and source it
+if [[ -e "$CFG_FILE" ]]; then
+   source "$CFG_FILE"
+fi
+
 # Display help
 usage() {
 cat << EOF
@@ -36,32 +44,15 @@ dmenu_fancy() {
   dmenu -b -i -l 10 -p : -fn 'Ttyp0-14' -nb \#101012 -sb \#66AABB -sf \#101012
 }
 
-# Ask for application type
-app=`echo -e "api\nrails" | dmenu_fancy`
-
-# Ask for rails environment
-retrieve_rails_env() {
-  app_name=$(echo -e \
-    "fathomless-escarpment-9185\ngf-rails-sandbox\ngf-rails-staging" | \
-    dmenu_fancy)
-  command='bundle exec rails c'
-}
-
-# Ask for api environment
-retrieve_api_env() {
-  app_name=$(echo -e "gf-api-production\ngf-api-sandbox\ngf-api-staging" | \
-    dmenu_fancy)
-  command='bundle exec bin/console'
-}
-
-# route app type to env prompt
-case $app in
-  "rails"*) retrieve_rails_env ;;
-  "api"*)   retrieve_api_env ;;
-  *)        exit 0 ;;
-esac
+app_name=$(printf "%s\n" "${APPS[@]}" | dmenu_fancy)
 
 if [[ -z $app_name ]]; then
+  exit 0
+fi
+
+command=$(printf "%s\n" "${COMMANDS[@]}" | dmenu_fancy)
+
+if [[ -z $command ]]; then
   exit 0
 fi
 
