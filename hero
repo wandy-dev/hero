@@ -30,7 +30,7 @@ error() {
 }
 
 # Set flag options
-while getopts "n" opt; do
+while getopts "nh" opt; do
    case "$opt" in
       n) new_window=true;;
       h) usage && exit 0;;
