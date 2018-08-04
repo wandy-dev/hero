@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Display help
+usage() {
+cat << EOF
+USAGE:
+  hero[ku] dmenu app command starter
+
+   hero [ -n ]
+
+OPTIONS:
+
+   -n : start console in new terminal window
+
+EOF
+}
+
+# Show an error message and print usage
+error() {
+   echo -e "\033[0;31m$1\033[0m"
+   usage && exit 1
+}
+
+# Set flag options
+while getopts "n" opt; do
+   case "$opt" in
+      n) new_window=true;;
+      h) usage && exit 0;;
+      *) error "Invalid flag.";;
+   esac
+done 2>/dev/null
+shift "$((OPTIND-1))"
+
+# Stylized dmenu
+dmenu_fancy() {
+  dmenu -b -i -l 10 -p : -fn 'Ttyp0-14' -nb \#101012 -sb \#66AABB -sf \#101012
+}
+
+# Ask for application type
+app=`echo -e "api\nrails" | dmenu_fancy`
+
+# Ask for rails environment
+retrieve_rails_env() {
+  app_name=$(echo -e \
+    "fathomless-escarpment-9185\ngf-rails-sandbox\ngf-rails-staging" | \
+    dmenu_fancy)
+  command='bundle exec rails c'
+}
+
+# Ask for api environment
+retrieve_api_env() {
+  app_name=$(echo -e "gf-api-production\ngf-api-sandbox\ngf-api-staging" | \
+    dmenu_fancy)
+  command='bundle exec bin/console'
+}
+
+# route app type to env prompt
+case $app in
+  "rails"*) retrieve_rails_env ;;
+  "api"*)   retrieve_api_env ;;
+  *)        exit 0 ;;
+esac
+
+if [[ -z $app_name ]]; then
+  exit 0
+fi
+
+if [[ $new_window ]]; then
+  st -e heroku run $command -a $app_name && exit 0
+else
+  heroku run $command -a $app_name && exit 0
+fi
