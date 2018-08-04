@@ -1,6 +1,7 @@
 # hero
 
 dmenu heroku application command runner.
+![](screencast.gif)
 
 ### Prerequisites
 
